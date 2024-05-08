@@ -1,8 +1,9 @@
 # namen_annotationen_wips_bfn
 Dieses Repository enthält die Scripts um Taxon Namen mit Daten aus den BfN Checklisten
+
 UI der API: https://checklisten.rotelistezentrum.de/api/public/swagger-ui
 
-Die Scripts sind in Python 3.12.0 
+Die Scripts sind in Python 3.12.0 geschrieben
 
 was man braucht:
 - Script name_annotations_with_bfn.py (im Repository)
