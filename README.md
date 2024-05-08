@@ -5,7 +5,7 @@ UI der API: https://checklisten.rotelistezentrum.de/api/public/swagger-ui
 
 Die Scripts sind in Python 3.12.0 geschrieben
 
-was man braucht:
+Was man braucht:
 - Script name_annotations_with_bfn.py (im Repository)
 - Script wiki_files.py (im Repository)
 - eine Liste als .txt mit allen Taxon Namen (von Nutzer)
