@@ -19,12 +19,12 @@ Der Script name_annotations_with_bfn.py kan man in vier Schritte beschreiben:
 2. Abfrage an die API mit Taxon by Name 
    * Namen werden einzeln in die API mit taxon-by-name abgefragt
      
-   Als Output dieses Schrittes wird ein JSON temporäre Datei mit Daten für jeden Namen erzeugt
-   * Aus disem temporäre JSON Datei werden die taxon_ids extrahiert und aufgelistet
+   Als Output dieses Schrittes wird ein JSON temporäre Datei mit Daten (u.a. taxon_id) für jeden Namen erzeugt
+   * Aus diesem temporären JSON Datei werden die taxon_ids extrahiert und aufgelistet
 3. Abfrage an die API mit Taxon ID
    * Taxon IDs werde einzeln in die API mit taxon/{id} gesucht
      
-   Als Output wird ein JSON Datei mit Status, Id, Synonyme u.a. für allen Namen insgesammt erstellt   
+   Als Output wird ein JSON Datei mit status, taxon_id, synonyms u.a. für allen Namen insgesammt erstellt   
 4. Temporäre Datein werden gelöscht
 
 Der Script wiki_files.py erzeugt aus dem im letzten Script generierten Datei einzelnen Dateien in MediaWiki Format für jeden Name
