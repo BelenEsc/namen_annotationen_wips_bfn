@@ -3,23 +3,23 @@ import json
 import time
 import os
 
-# Capture the start time
-start_time = time.time() 
-
 ##### Variables
 
-# Define urls 
+# Define input list 
+# Adjust the name of your file here. Change the "example_list.txt" to the name of your file 
+input_list = 'example_list.txt'
+
+# Defined urls 
 url_taxon_by_name = "https://checklisten.rotelistezentrum.de/api/public/1/taxa-by-name?&checklists=43" # taxa-by-name
 url_taxon_id = "https://checklisten.rotelistezentrum.de/api/public/1/taxon/" # ids
 
-# Define path
+# Defined path
 path = os.path.dirname(os.path.abspath(__file__))
 
-# Define input files
-input_names_list = path + r"\wips.txt"
+input_names_list = path + f"\\{input_list}"
 input_id_list = path + r"\taxon_id_wips.txt"
 
-# Define output files 
+# Defined output files 
 output_taxa_by_name_file = path + r"\output_taxa_by_name_wips.json"
 output_id_file = path + r"\output_full_taxon_wips.json"
 taxon_id_file = path + r"\taxon_id_wips.txt"
@@ -29,20 +29,12 @@ log_file = path + r"\error.log"
 taxon_ids_temp = []
 output_data_temp = {}
 
-
-##### Functions
-
-def delete_authors(input_string):
-    parts = input_string.split()
-    if 'subsp.' in parts[2]:
-        name_without_authors = parts[0] + " " + parts[1] + " " + parts[2] + " " + parts[3]
-    else:
-        name_without_authors = parts[0] +" "+ parts[1]
-    return name_without_authors
+# Capture the start time
+start_time = time.time() 
 
 # Read the input file 
 with open(input_names_list, 'r') as file:
-    next(file) # ignore the header
+   # next(file) # ignore the header
     inputlist = []
     for line in file:
         line = line.strip() 
@@ -53,8 +45,7 @@ with open(input_names_list, 'r') as file:
 with open(output_taxa_by_name_file, "w") as output_file:
     all_taxnames = []
     for taxname in inputlist:
-        taxname = taxname.capitalize()
-        taxname = delete_authors(taxname)            
+        taxname = taxname[0].upper() + taxname[1:]          
         params = {'taxname': taxname}
         
         # send request   

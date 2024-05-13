@@ -1,31 +1,32 @@
 # namen_annotationen_wips_bfn
-Dieses Repository enthält die Scripts um Taxon Namen mit Daten aus den BfN Checklisten
+Dieses Repository enthält die Skripte zum Erfassen von Taxon-Namen mit Daten aus den BfN Checklisten
 
-UI der API: https://checklisten.rotelistezentrum.de/api/public/swagger-ui
+Die Benutzeroberfläche (UI) der API ist unter folgendem Link verfügbar:
+https://checklisten.rotelistezentrum.de/api/public/swagger-ui
 
-Die Scripts sind in Python 3.12.0 geschrieben
+Die Skripte sind in Python 3.12.0 verfasst
 
-Was man braucht:
-- Script name_annotations_with_bfn.py (im Repository)
-- Script wiki_files.py (im Repository)
-- eine Liste als .txt mit allen Taxon Namen (von Nutzer)
+Was benötigt wird:
+- Das Skript name_annotations_with_bfn.py (im Repository).
+- Das Skript wiki_files.py (im Repository).
+- Eine Liste als .txt Datei mit allen Taxon-Namen (ein Beispiel findet sich im Repository als "example_lis.txt". Der Name der Datei muss vom Benutzer  im ersten Script in Zeile 10 angepasst werden). Wenn die Liste einen Header enthalten sollte, muss die Zeile 37 einkommentiert werden.
 
-Der Path ist mit os.path.dirname(os.path.abspath(__file__)) definiert. Daher muss man lediglich die Variablen von Input Files in den Scripts anpassen.
+Der Path ist mit os.path.dirname(os.path.abspath(__file__)) definiert. Daher müssen lediglich die Variablen für die Eingabeliste angepasst werden.
 
-Der Script name_annotations_with_bfn.py kan man in vier Schritte beschreiben: 
-1. Namen Normalisierung
-   * Der erste Buchstabe wird großgeschrieben
-   * Da die API keine Autoren berücksichtigt, werden sie aus den Namen gelöscht
-2. Abfrage an die API mit Taxon by Name 
-   * Namen werden einzeln in die API mit taxon-by-name abgefragt
+Das Skript name_annotations_with_bfn.py kann in vier Schritte unterteilt werden: 
+
+1. Normalisierung der Namen:
+   * Der erste Buchstabe wird großgeschrieben (wie von der API gefordert).
+2. Abfrage an die API mit "taxon-by-name": 
+   * Die Namen werden einzeln in die API mit taxon-by-name abgefragt.
      
-   Als Output dieses Schrittes wird ein JSON temporäre Datei mit Daten (u.a. taxon_id) für jeden Namen erzeugt
-   * Aus diesem temporären JSON Datei werden die taxon_ids extrahiert und aufgelistet
-3. Abfrage an die API mit Taxon ID
-   * Taxon IDs werde einzeln in die API mit taxon/{id} gesucht
-     
-   Als Output wird ein JSON Datei mit status, taxon_id, synonyms u.a. für allen Namen insgesammt erstellt   
-4. Temporäre Datein werden gelöscht
+   Als Ausgabe dieses Schrittes wird eine temporäre JSON-Datei mit Daten (u.a. taxon_id) für jeden Namen erzeugt.
+   * Aus dieser temporären JSON-Datei werden die "taxon_ids" extrahiert und aufgelistet.
+3. Abfrage an die API mit taxon id:
+   * Taxon IDs werden einzeln in die API mit "taxon/{id}" gesucht.
 
-Der Script wiki_files.py erzeugt aus dem im letzten Script generierten Datei einzelnen Dateien in MediaWiki Format für jeden Name
+   Als Ausgabe wird eine JSON-Datei mit "status", "taxon_id" und "synonyms" für allen Namen insgesammt erstellt   
+4. Temporäre Dateien werden gelöscht
+
+Das Skript wiki_files.py erzeugt aus der im letzten Skript generierten Datei einzelne Dateien im MediaWiki-Format für jeden Namen.
 
