@@ -1,3 +1,6 @@
+Autorin und Ansprechpartenerin: Belen Escobari (NFDI4Biodiversity ZE Botanischer Garten und Botanisches Museum)
+Kontakt: b.escobari@bo.berlin
+
 # namen_annotationen_wips_bfn
 Dieses Repository enthält die Skripte zum Erfassen von Taxon-Namen mit Daten aus den BfN Checklisten
 
