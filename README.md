@@ -10,10 +10,20 @@ https://checklisten.rotelistezentrum.de/api/public/swagger-ui
 
 Die Skripte sind in Python 3.12.0 verfasst
 
+Beispiel-Befehlsaufruf zum Abfragen und Formatieren der Taxon-Namen (falls unter Windows, Befehl `python` mit `python.exe` ersetzen):
+
+```bash
+# (1) Namensliste abfragen und Daten holen
+python name_annotations_with_bfn.py # s. Skript, verwendet die Taxonliste example_list.txt
+
+# (2) abgespeicherte Daten durcharbeiten und als Wiki-Text ausgeben
+python wiki_files.py
+```
+
 Was benötigt wird:
-- Das Skript name_annotations_with_bfn.py (im Repository).
-- Das Skript wiki_files.py (im Repository).
-- Eine Liste als .txt Datei mit allen Taxon-Namen (ein Beispiel findet sich im Repository als "example_lis.txt". Der Name der Datei muss vom Benutzer  im ersten Script in Zeile 10 angepasst werden). Wenn die Liste einen Header enthalten sollte, muss die Zeile 37 einkommentiert werden.
+- Das Skript [`name_annotations_with_bfn.py`](./name_annotations_with_bfn.py) (im Repository).
+- Das Skript [`wiki_files.py`](./wiki_files.py) (im Repository).
+- Eine Liste als .txt Datei mit allen Taxon-Namen (ein Beispiel findet sich im Repository als “[`example_list.txt`](./example_list.txt)”. Der Name der Datei muss vom Benutzer  im ersten Script in Zeile 10 angepasst werden). Wenn die Liste einen Header enthalten sollte, muss die Zeile 37 einkommentiert werden.
 
 Der Path ist mit os.path.dirname(os.path.abspath(__file__)) definiert. Daher müssen lediglich die Variablen für die Eingabeliste angepasst werden.
 
@@ -32,5 +42,5 @@ Das Skript name_annotations_with_bfn.py kann in vier Schritte unterteilt werden:
    Als Ausgabe wird eine JSON-Datei mit "status", "taxon_id" und "synonyms" für allen Namen insgesammt erstellt   
 4. Temporäre Dateien werden gelöscht
 
-Das Skript wiki_files.py erzeugt aus der im letzten Skript generierten Datei einzelne Dateien im MediaWiki-Format für jeden Namen.
+Das Skript [`wiki_files.py`](./wiki_files.py) erzeugt aus der im letzten Skript generierten Datei einzelne Dateien im MediaWiki-Format für jeden Namen.
 
