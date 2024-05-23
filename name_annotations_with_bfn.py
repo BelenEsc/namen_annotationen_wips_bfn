@@ -10,20 +10,22 @@ import os
 input_list = 'example_list.txt'
 
 # Defined urls 
-url_taxon_by_name = "https://checklisten.rotelistezentrum.de/api/public/1/taxa-by-name?&checklists=43" # taxa-by-name
-url_taxon_id = "https://checklisten.rotelistezentrum.de/api/public/1/taxon/" # ids
+api_url_taxon_by_name = "https://checklisten.rotelistezentrum.de/api/public/1/taxa-by-name?&checklists=43"  # taxa-by-name
+api_url_taxon_id = "https://checklisten.rotelistezentrum.de/api/public/1/taxon/"  # ids
 
-# Defined path
-path = os.path.dirname(os.path.abspath(__file__))
+# Defined working_directory
+working_directory = os.path.dirname(os.path.abspath(__file__))
 
-input_names_list = path + f"\\{input_list}"
-input_id_list = path + r"\taxon_id_wips.txt"
+input_names_list = os.path.join(working_directory, input_list)
+# input_names_list = working_directory + f"\\{input_list}"
+input_id_list = os.path.join(working_directory, r"taxon_id_wips.txt")
+# input_id_list = working_directory + r"\taxon_id_wips.txt"
 
 # Defined output files 
-output_taxa_by_name_file = path + r"\output_taxa_by_name_wips.json"
-output_id_file = path + r"\output_full_taxon_wips.json"
-taxon_id_file = path + r"\taxon_id_wips.txt"
-log_file = path + r"\error.log"
+output_taxa_by_name_file = os.path.join(working_directory, r"output_taxa_by_name_wips.json")
+output_id_file = os.path.join(working_directory, r"output_full_taxon_wips.json")
+taxon_id_file = os.path.join(working_directory, r"taxon_id_wips.txt")
+log_file = os.path.join(working_directory, r"error.log")
 
 # Temp variables
 taxon_ids_temp = []
@@ -49,17 +51,19 @@ with open(output_taxa_by_name_file, "w") as output_file:
         params = {'taxname': taxname}
         
         # send request   
-        response1 = requests.get(url_taxon_by_name, params=params)
+        response1 = requests.get(api_url_taxon_by_name, params=params)
         
         if response1.status_code == 200:
             response_text=response1.text
             data = json.loads(response_text)
             all_taxnames.extend(data['taxnames'])
         else:
-                wiki_log = f"Failed to retrieve data for taxon name '{taxname}'. Status code: {response1.status_code}; url {response1.url}\n"
-                
-                with open(log_file, "a") as output_log_file:
-                    output_log_file.write(wiki_log)
+            wiki_log = f"Failed to retrieve data for taxon name '{taxname}'." \
+                       f" Status code: {response1.status_code};" \
+                       f" url {response1.url}\n"
+
+            with open(log_file, "a") as output_log_file:
+                output_log_file.write(wiki_log)
 
     # Write JSON output file
     json.dump({"taxnames": all_taxnames}, output_file, indent=4, sort_keys=True)
@@ -80,17 +84,19 @@ with open(input_id_list, 'r') as file:
 
 for taxon_id in inputlist:
     # Construct the complete URL as string with taxon ID
-    url_final_request = url_taxon_id + taxon_id + r"?output-hierarchy%3F=true&output-synonyms%3F=true"
+    url_final_request = api_url_taxon_id + taxon_id + r"?output-hierarchy%3F=true&output-synonyms%3F=true"
     response2 = requests.get(url_final_request)
     if response2.status_code == 200:
         response_text = response2.text
         data = json.loads(response_text)
         output_data_temp[taxon_id] = data # Add response to output dictionary
     else:
-            # Create a log file with errors 
-            wiki_log = f"Failed to retrieve data for taxon_ID'{taxon_id}'. Status code: {response2.status_code}; url {response2.url}\n"
-            with open(log_file, "a") as output_log_file:
-                output_log_file.write(wiki_log)
+        # Create a log file with errors
+        wiki_log = f"Failed to retrieve data for taxon_ID'{taxon_id}'." \
+                   f" Status code: {response2.status_code};" \
+                   f" url {response2.url}\n"
+        with open(log_file, "a") as output_log_file:
+            output_log_file.write(wiki_log)
     
 # Write the output JSON file
 with open(output_id_file, 'w') as output_file:
