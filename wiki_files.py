@@ -155,10 +155,10 @@ for key, this_datavalue in taxon_data.items():
             this_synonym_list.append(format_species_name(this_synonym["name"]))
 
     wiki_text_de = "{{{{Artangabe BfN Prüfliste" \
-               "\n|wissenschaftlicher Name={accepted_name}" \
-                "\n|Quellenangabe={checklist_name}, Datenquelle: {api_url}{checklist_id}" \
-                "\n|Quellenzitat={checklist_citation}" \
+                "\n|wissenschaftlicher Name={accepted_name}" \
                 "\n|Bearbeitungsstand={name_status}" \
+                "\n|Datenquelle={checklist_name}, Datenquelle: {api_url}{checklist_id}" \
+                "\n|Quellenangabe={checklist_citation}" \
                 "\n|Synonymliste={name_synonyms}" \
                    "\n}}}}\n".format(
         accepted_name=format_species_name(accepted_name),
