@@ -1,6 +1,8 @@
-Autorin und Ansprechpartenerin: Belen Escobari (NFDI4Biodiversity ZE Botanischer Garten und Botanisches Museum)
+Autoren und Ansprechpartener: 
+* Belen Escobari (Kontakt: b.escobari@bo.berlin, NFDI4Biodiversity ZE Botanischer Garten und Botanisches Museum)
+* Andreas Plank (a.plank@bo.berlin, WIPs-De (bot. Wildpflanzenschutz Deutschland), ZE Botanischer Garten und Botanisches Museum)
 
-Kontakt: b.escobari@bo.berlin
+
 
 # namen_annotationen_wips_bfn
 Dieses Repository enthält die Skripte zum Erfassen von Taxon-Namen mit Daten aus den BfN Checklisten
@@ -25,22 +27,22 @@ Was benötigt wird:
 - Das Skript [`wiki_files.py`](./wiki_files.py) (im Repository).
 - Eine Liste als .txt Datei mit allen Taxon-Namen (ein Beispiel findet sich im Repository als “[`example_list.txt`](./example_list.txt)”. Der Name der Datei muss vom Benutzer  im ersten Script in Zeile 10 angepasst werden). Wenn die Liste einen Header enthalten sollte, muss die Zeile 37 einkommentiert werden.
 
-Der Path ist mit os.path.dirname(os.path.abspath(__file__)) definiert. Daher müssen lediglich die Variablen für die Eingabeliste angepasst werden.
+Das Arbeitsverzeichnis ist mit `os.path.dirname(os.path.abspath(__file__))` definiert. Daher müssen lediglich die Variablen für die Eingabeliste angepasst werden.
 
-Das Skript name_annotations_with_bfn.py kann in vier Schritte unterteilt werden: 
+Das Skript `name_annotations_with_bfn.py` kann in vier Arbeitsschritte unterteilt werden: 
 
 1. Normalisierung der Namen:
    * Der erste Buchstabe wird großgeschrieben (wie von der API gefordert).
-2. Abfrage an die API mit "taxon-by-name": 
+2. Namensabfrage vermittels `"taxon-by-name"`-API: 
    * Die Namen werden einzeln in die API mit taxon-by-name abgefragt.
      
-   Als Ausgabe dieses Schrittes wird eine temporäre JSON-Datei mit Daten (u.a. taxon_id) für jeden Namen erzeugt.
+   Als Ausgabe dieses Schrittes wird eine temporäre JSON-Datei mit Daten (u.a. `"taxon-id"`) für jeden Namen erzeugt.
    * Aus dieser temporären JSON-Datei werden die "taxon_ids" extrahiert und aufgelistet.
-3. Abfrage an die API mit taxon id:
-   * Taxon IDs werden einzeln in die API mit "taxon/{id}" gesucht.
+3. Abfrage an die API mit den `id` der Taxa:
+   * Taxon IDs werden einzeln in die API mit `"taxon/{id}"` gesucht.
 
-   Als Ausgabe wird eine JSON-Datei mit "status", "taxon_id" und "synonyms" für allen Namen insgesammt erstellt   
+   Als Ausgabe wird eine JSON-Datei mit `"status"`, `"taxon_id"` und `"synonyms"` aller Namen insgesamt erstellt   
 4. Temporäre Dateien werden gelöscht
 
-Das Skript [`wiki_files.py`](./wiki_files.py) erzeugt aus der im letzten Skript generierten Datei einzelne Dateien im MediaWiki-Format für jeden Namen.
+Das Skript [`wiki_files.py`](./wiki_files.py) erzeugt aus der im letzten Skript generierten Datei einzelne Dateien im MediaWiki-Format für jeden Namen, in Form einer Wiki-Text-Vorlage.
 
