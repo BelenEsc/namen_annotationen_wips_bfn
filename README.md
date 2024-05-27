@@ -1,5 +1,5 @@
 Autoren und Ansprechpartener: 
-* Belen Escobari (Kontakt: b.escobari@bo.berlin, NFDI4Biodiversity ZE Botanischer Garten und Botanisches Museum)
+* Belen Escobari (b.escobari@bo.berlin, NFDI4Biodiversity, ZE Botanischer Garten und Botanisches Museum)
 * Andreas Plank (a.plank@bo.berlin, WIPs-De (bot. Wildpflanzenschutz Deutschland), ZE Botanischer Garten und Botanisches Museum)
 
 
