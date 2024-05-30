@@ -1,22 +1,41 @@
 import requests
 import json
 import time
-import os
+import os, sys
+import argparse
+from datetime import timedelta
 
 ##### Variables
 
 # Define input list 
-# Adjust the name of your file here. Change the "example_list.txt" to the name of your file 
+# Adjust the name of your file here. Change the "example_list.txt" to the name of your file
+# TODO check add file as command line argument to ovewrite default
 input_list = 'example_list.txt'
+# Define working_directory
+working_directory = os.path.dirname(os.path.abspath(__file__))
 
-# Defined urls 
+parser = argparse.ArgumentParser(
+    description='Query checklist data from https://checklisten.rotelistezentrum.de/api/public/swagger-ui '
+                 'based on a text list of taxon names')
+parser.add_argument(
+    'taxonlist',
+    nargs='?',
+    default=input_list,
+    help='a text list of taxon names (default: {default})'.format(default=input_list)
+)
+
+# Parse the arguments
+command_args = parser.parse_args()
+
+print(f"Reading taxon names from {command_args.taxonlist} …")
+# sys.exit(0)
+
+# Defined urls
 api_url_taxon_by_name = "https://checklisten.rotelistezentrum.de/api/public/1/taxa-by-name?&checklists=43"  # taxa-by-name
 api_url_taxon_id = "https://checklisten.rotelistezentrum.de/api/public/1/taxon/"  # ids
 
-# Defined working_directory
-working_directory = os.path.dirname(os.path.abspath(__file__))
 
-input_names_list = os.path.join(working_directory, input_list)
+input_names_list = os.path.join(working_directory, command_args.taxonlist)
 # input_names_list = working_directory + f"\\{input_list}"
 input_id_list = os.path.join(working_directory, r"taxon_id_wips.txt")
 # input_id_list = working_directory + r"\taxon_id_wips.txt"
@@ -39,11 +58,12 @@ with open(input_names_list, 'r') as file:
    # next(file) # ignore the header
     inputlist = []
     for line in file:
-        line = line.strip() 
-        inputlist.append (line)
+        line = line.strip()
+        if len(line) > 0:
+            inputlist.append (line)
 
 
-# Normalize names
+print('Normalize names …')
 with open(output_taxa_by_name_file, "w") as output_file:
     all_taxnames = []
     for taxname in inputlist:
@@ -82,6 +102,7 @@ with open(taxon_id_file, 'w') as output_file:
 with open(input_id_list, 'r') as file:
     inputlist = [line.strip() for line in file]
 
+print("Query checklist api …")
 for taxon_id in inputlist:
     # Construct the complete URL as string with taxon ID
     url_final_request = api_url_taxon_id + taxon_id + r"?output-hierarchy%3F=true&output-synonyms%3F=true"
@@ -97,7 +118,8 @@ for taxon_id in inputlist:
                    f" url {response2.url}\n"
         with open(log_file, "a") as output_log_file:
             output_log_file.write(wiki_log)
-    
+
+print("Write JSON data file …")
 # Write the output JSON file
 with open(output_id_file, 'w') as output_file:
     json.dump(output_data_temp, output_file, indent=4)
@@ -107,6 +129,7 @@ os.remove(input_id_list)
 os.remove(output_taxa_by_name_file)
 
 end_time = time.time() # Capture the end time
-execution_time = (end_time - start_time)/60 # Calculate the elapsed time
+execution_time = timedelta(seconds=(end_time - start_time)) # Calculate the elapsed time
 
-print(f'The script took {execution_time} min to run.')
+print(f'The script took {execution_time} to run.')
+print(f'Now you can run wiki_files.py, to write the wiki text output.')

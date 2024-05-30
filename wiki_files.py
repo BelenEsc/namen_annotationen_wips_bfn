@@ -1,17 +1,35 @@
 import json
 import os.path
 import re
+import argparse, sys
 
 api_url_checklist_id = "https://checklisten.rotelistezentrum.de/api/public/1/checklist/"  # ids
 
 # Define working_directory
-path = os.path.dirname(os.path.abspath(__file__))
+working_directory = os.path.dirname(os.path.abspath(__file__))
 
-# Define input file
-input_data_file = os.path.join(path, r'output_full_taxon_wips.json')
+# Define input data file
+input_data_file = r'output_full_taxon_wips.json'
+
+parser = argparse.ArgumentParser(
+    description='Write Wiki text files as results based from previous JSON data checklist query')
+parser.add_argument(
+    'input_data_file',
+    nargs='?',
+    default=input_data_file,
+    help='the JSON checklist data file to process (default: {default})'.format(default=input_data_file)
+)
+
+# Parse the arguments
+command_args = parser.parse_args()
+
+print(f"Reading data file {command_args.input_data_file} …")
+# sys.exit(0)
+
+input_data_file_path = os.path.join(working_directory, input_data_file)
 
 # Read JSON
-with open(input_data_file, 'r') as thisdata:
+with open(command_args.input_data_file, 'r') as thisdata:
     taxon_data = json.load(thisdata)
 
 
@@ -138,7 +156,7 @@ def format_species_name(scientific_name):
 
 for key, this_datavalue in taxon_data.items():
     # key of ….items() is probably the taxon ID
-    output_file = os.path.join(path, '{file_name}.wiki'.format(file_name=this_datavalue["accepted-name"]))
+    output_file = os.path.join(working_directory, '{file_name}.wiki'.format(file_name=this_datavalue["accepted-name"]))
     accepted_name = this_datavalue["accepted-name"]
     # name_id = this_datavalue["id"]
     # name_status = this_datavalue["taxon_status"]

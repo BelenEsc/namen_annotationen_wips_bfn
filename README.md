@@ -15,17 +15,23 @@ Die Skripte sind in Python 3.12.0 verfasst
 Beispiel-Befehlsaufruf zum Abfragen und Formatieren der Taxon-Namen (falls unter Windows, Befehl `python` mit `python.exe` ersetzen):
 
 ```bash
+# (0) Befehlshilfe aufrufen
+python name_annotations_with_bfn.py --help
+ 
 # (1) Namensliste abfragen und Daten holen
-python name_annotations_with_bfn.py # s. Skript, verwendet die Taxonliste example_list.txt
+python name_annotations_with_bfn.py # das Skript verwendet die Beispielvorlage example_list.txt
+# oder eine gesonderte Textdatei angeben
+# python name_annotations_with_bfn.py Verantwortungsarten_Liste_WIPs-Portal.txt
 
 # (2) abgespeicherte Daten durcharbeiten und als Wiki-Text ausgeben
+python wiki_files.py --help # Befehlshilfe aufrufen
 python wiki_files.py
 ```
 
 Was benötigt wird:
 - Das Skript [`name_annotations_with_bfn.py`](./name_annotations_with_bfn.py) (im Repository).
 - Das Skript [`wiki_files.py`](./wiki_files.py) (im Repository).
-- Eine Liste als .txt Datei mit allen Taxon-Namen (ein Beispiel findet sich im Repository als “[`example_list.txt`](./example_list.txt)”. Der Name der Datei muss vom Benutzer  im ersten Script in Zeile 10 angepasst werden). Wenn die Liste einen Header enthalten sollte, muss die Zeile 37 einkommentiert werden.
+- Eine Liste als .txt Datei mit allen Taxon-Namen (ein Beispiel findet sich im Repository als “[`example_list.txt`](./example_list.txt)”. Die Taxonliste kann jede beliebige Textdatei sein, z.B. `python name_annotations_with_bfn.py Verantwortungsarten_Liste_WIPs-Portal.txt`
 
 Das Arbeitsverzeichnis ist mit `os.path.dirname(os.path.abspath(__file__))` definiert. Daher müssen lediglich die Variablen für die Eingabeliste angepasst werden.
 
