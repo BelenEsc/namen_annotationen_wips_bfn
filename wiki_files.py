@@ -172,7 +172,7 @@ for key, this_datavalue in taxon_data.items():
         for this_synonym in this_datavalue['synonyms']:
             this_synonym_list.append(format_species_name(this_synonym["name"]))
 
-    wiki_text_de = "{{{{Artangabe BfN Prüfliste" \
+    wiki_text_de = "{{{{Artangaben BfN Prüfliste" \
         "\n|wissenschaftlicher Name={accepted_name}" \
         "\n|Bearbeitungsstand={name_status}" \
         "\n|Datenquelle={checklist_name}, Datenquelle: {wiki_checklist_uri}, {wiki_api_taxon_uri}" \
