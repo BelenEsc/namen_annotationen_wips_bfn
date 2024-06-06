@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import os.path
 import re
@@ -177,9 +178,11 @@ for key, this_datavalue in taxon_data.items():
         "\n|Bearbeitungsstand={name_status}" \
         "\n|Datenquelle={checklist_name}, Datenquelle: {wiki_checklist_uri}, {wiki_api_taxon_uri}" \
         "\n|Quellenangabe={checklist_citation}" \
+        "\n|Abfragedatum={query_date}" \
         "\n|Synonymliste={name_synonyms}" \
         "\n}}}}\n".format(
             accepted_name=format_species_name(accepted_name),
+            query_date='{dt.day}.{dt.month}.{dt.year}'.format(dt=datetime.today()),
             wiki_checklist_uri=this_datavalue['checklist_uri'],
             # wiki_checklist_uri="[{uri} {uri_display}]".format(
             #     uri=this_datavalue['checklist_uri'],
