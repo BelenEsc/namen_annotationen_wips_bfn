@@ -3,8 +3,8 @@ import os.path
 import re
 import argparse, sys
 
-api_url_checklist_id = "https://checklisten.rotelistezentrum.de/api/public/1/checklist/"  # ids
-
+api_url_checklist = "https://checklisten.rotelistezentrum.de/api/public/1/checklist/"  # ids
+api_url_taxon = "https://checklisten.rotelistezentrum.de/api/public/1/taxon/"
 # Define working_directory
 working_directory = os.path.dirname(os.path.abspath(__file__))
 
@@ -153,11 +153,11 @@ def format_species_name(scientific_name):
     else:
         return scientific_name
 
-
+print("Write Wiki template files *.wiki ...")
 for key, this_datavalue in taxon_data.items():
     # key of ….items() is probably the taxon ID
-    output_file = os.path.join(working_directory, '{file_name}.wiki'.format(file_name=this_datavalue["accepted-name"]))
-    accepted_name = this_datavalue["accepted-name"]
+    output_file = os.path.join(working_directory, '{file_name}.wiki'.format(file_name=this_datavalue["accepted_name"]))
+    accepted_name = this_datavalue["accepted_name"]
     # name_id = this_datavalue["id"]
     # name_status = this_datavalue["taxon_status"]
     # TODO check format_species_name(name)
@@ -173,20 +173,32 @@ for key, this_datavalue in taxon_data.items():
             this_synonym_list.append(format_species_name(this_synonym["name"]))
 
     wiki_text_de = "{{{{Artangabe BfN Prüfliste" \
-                "\n|wissenschaftlicher Name={accepted_name}" \
-                "\n|Bearbeitungsstand={name_status}" \
-                "\n|Datenquelle={checklist_name}, Datenquelle: {api_url}{checklist_id}" \
-                "\n|Quellenangabe={checklist_citation}" \
-                "\n|Synonymliste={name_synonyms}" \
-                   "\n}}}}\n".format(
-        accepted_name=format_species_name(accepted_name),
-        api_url=api_url_checklist_id,
-        checklist_id=this_datavalue['id'],
-        checklist_name=this_datavalue['checklist'],
-        checklist_citation="&nbsp;&emdash; ".join(this_datavalue['checklist-citation']),
-        name_status=translate_taxon_status(this_datavalue["taxon_status"]),
-        name_synonyms="; ".join(this_synonym_list)
-    )
+        "\n|wissenschaftlicher Name={accepted_name}" \
+        "\n|Bearbeitungsstand={name_status}" \
+        "\n|Datenquelle={checklist_name}, Datenquelle: {wiki_checklist_uri}, {wiki_api_taxon_uri}" \
+        "\n|Quellenangabe={checklist_citation}" \
+        "\n|Synonymliste={name_synonyms}" \
+        "\n}}}}\n".format(
+            accepted_name=format_species_name(accepted_name),
+            wiki_checklist_uri=this_datavalue['checklist_uri'],
+            # wiki_checklist_uri="[{uri} {uri_display}]".format(
+            #     uri=this_datavalue['checklist_uri'],
+            #     uri_display=this_datavalue['checklist_uri'].replace("https://", "")
+            # ),
+            wiki_api_taxon_uri='{api_url_taxon}{taxon_id}'.format(
+                api_url_taxon=api_url_taxon,
+                taxon_id=this_datavalue['id']
+            ),
+            # wiki_api_taxon_uri='[{api_url_taxon}{taxon_id} {api_url_taxon_display}{taxon_id}]'.format(
+            #     api_url_taxon=api_url_taxon,
+            #     api_url_taxon_display=api_url_taxon.replace("https://", ""),
+            #     taxon_id=this_datavalue['id']
+            # ),
+            checklist_name=this_datavalue['checklist'],
+            checklist_citation="&nbsp;&emdash; ".join(this_datavalue['checklist_citation']),
+            name_status=translate_taxon_status(this_datavalue["taxon_status"]),
+            name_synonyms="; ".join(this_synonym_list)
+        )
 
     # Create an output file for each name 
     with open(output_file, "w", encoding='utf-8') as output:

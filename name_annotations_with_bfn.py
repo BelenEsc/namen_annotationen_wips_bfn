@@ -1,3 +1,5 @@
+import urllib
+
 import requests
 import json
 import time
@@ -31,8 +33,8 @@ print(f"Reading taxon names from {command_args.taxonlist} …")
 # sys.exit(0)
 
 # Defined urls
-api_url_taxon_by_name = "https://checklisten.rotelistezentrum.de/api/public/1/taxa-by-name?&checklists=43"  # taxa-by-name
-api_url_taxon_id = "https://checklisten.rotelistezentrum.de/api/public/1/taxon/"  # ids
+api_url_taxon_by_name = "https://checklisten.rotelistezentrum.de/api/public/1/taxa_by_name"  # taxa-by-name
+api_url_taxon = "https://checklisten.rotelistezentrum.de/api/public/1/taxon/"  # ids
 
 
 input_names_list = os.path.join(working_directory, command_args.taxonlist)
@@ -63,24 +65,29 @@ with open(input_names_list, 'r') as file:
             inputlist.append (line)
 
 
-print('Normalize names …')
+print('Normalize and query names …')
 with open(output_taxa_by_name_file, "w") as output_file:
     all_taxnames = []
     for taxname in inputlist:
-        taxname = taxname[0].upper() + taxname[1:]          
-        params = {'taxname': taxname}
+        taxname = taxname[0].upper() + taxname[1:]
+        # taxname = urllib.parse.quote(taxname[0].upper() + taxname[1:])
+        params = {
+            'taxname': taxname,
+            'checklist': 43
+        }
         
-        # send request   
-        response1 = requests.get(api_url_taxon_by_name, params=params)
-        
-        if response1.status_code == 200:
-            response_text=response1.text
+        # send request
+        response_taxon_by_name_api = requests.get(api_url_taxon_by_name, params=params)
+        # print(vars(response_taxon_by_name_api))
+        # print(response_taxon_by_name_api.text)
+        if response_taxon_by_name_api.status_code == 200:
+            response_text = response_taxon_by_name_api.text
             data = json.loads(response_text)
             all_taxnames.extend(data['taxnames'])
         else:
             wiki_log = f"Failed to retrieve data for taxon name '{taxname}'." \
-                       f" Status code: {response1.status_code};" \
-                       f" url {response1.url}\n"
+                       f" Status code: {response_taxon_by_name_api.status_code};" \
+                       f" url {response_taxon_by_name_api.url}\n"
 
             with open(log_file, "a") as output_log_file:
                 output_log_file.write(wiki_log)
@@ -92,7 +99,7 @@ with open(output_taxa_by_name_file, "w") as output_file:
 with open(output_taxa_by_name_file, 'r') as file:
     data = json.load(file)
     for taxname in data['taxnames']:
-        taxon_ids_temp.append(taxname['taxon-id'])
+        taxon_ids_temp.append(taxname['taxon_id'])
 
 with open(taxon_id_file, 'w') as output_file:
     for taxon_id in taxon_ids_temp:
@@ -105,7 +112,7 @@ with open(input_id_list, 'r') as file:
 print("Query checklist api …")
 for taxon_id in inputlist:
     # Construct the complete URL as string with taxon ID
-    url_final_request = api_url_taxon_id + taxon_id + r"?output-hierarchy%3F=true&output-synonyms%3F=true"
+    url_final_request = api_url_taxon + taxon_id + r"?output-hierarchy%3F=true&output-synonyms%3F=true"
     response2 = requests.get(url_final_request)
     if response2.status_code == 200:
         response_text = response2.text
