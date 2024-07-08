@@ -173,6 +173,12 @@ for key, this_datavalue in taxon_data.items():
         for this_synonym in this_datavalue['synonyms']:
             this_synonym_list.append(format_species_name(this_synonym["name"]))
 
+    this_checklist_citation = ""
+    try:
+        this_checklist_citation = this_datavalue['checklist_citations'][0]['long_citation']
+    except KeyError:
+        this_checklist_citation = "???"
+
     wiki_text_de = "{{{{Artangaben BfN Prüfliste" \
         "\n|wissenschaftlicher Name={accepted_name}" \
         "\n|Bearbeitungsstand={name_status}" \
@@ -198,7 +204,7 @@ for key, this_datavalue in taxon_data.items():
             #     taxon_id=this_datavalue['id']
             # ),
             checklist_name=this_datavalue['checklist'],
-            checklist_citation="&nbsp;&emdash; ".join(this_datavalue['checklist_citation']),
+            checklist_citation=this_checklist_citation,
             name_status=translate_taxon_status(this_datavalue["taxon_status"]),
             name_synonyms="; ".join(this_synonym_list)
         )
