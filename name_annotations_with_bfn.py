@@ -82,8 +82,15 @@ with open(output_taxa_by_name_file, "w") as output_file:
         # print(response_taxon_by_name_api.text)
         if response_taxon_by_name_api.status_code == 200:
             response_text = response_taxon_by_name_api.text
-            data = json.loads(response_text)
+            data = json.loads(response_text)            
             all_taxnames.extend(data['taxnames'])
+            if len(data['taxnames'])==0:
+                wiki_log = f"Data result for taxon name '{taxname}' is empty." \
+                        f" Status code: {response_taxon_by_name_api.status_code};" \
+                        f" url {response_taxon_by_name_api.url}. Somthing is not right.\n"
+                with open(log_file, "a") as output_log_file:
+                    output_log_file.write(wiki_log)
+
         else:
             wiki_log = f"Failed to retrieve data for taxon name '{taxname}'." \
                        f" Status code: {response_taxon_by_name_api.status_code};" \
@@ -139,4 +146,10 @@ end_time = time.time() # Capture the end time
 execution_time = timedelta(seconds=(end_time - start_time)) # Calculate the elapsed time
 
 print(f'The script took {execution_time} to run.')
-print(f'Now you can run wiki_files.py, to write the wiki text output.')
+if os.path.exists(log_file):
+    print(
+        f"There are some issues in {log_file}.\n" \
+        f"Please check them before you transform the result to Wiki code by running: python wiki_files.py"
+    )
+else:
+    print(f'Now, to get Wiki text from the result, run: python wiki_files.py')
