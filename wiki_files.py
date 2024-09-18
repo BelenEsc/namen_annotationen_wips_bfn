@@ -154,8 +154,10 @@ def format_species_name(scientific_name):
     else:
         return scientific_name
 
+wiki_text_de_list = []
+
 print("Write Wiki template files *.wiki ...")
-for key, this_datavalue in taxon_data.items():
+for key_taxon_id, this_datavalue in taxon_data.items():
     # key of ….items() is probably the taxon ID
     output_file = os.path.join(working_directory, '{file_name}.wiki'.format(file_name=this_datavalue["accepted_name"]))
     accepted_name = this_datavalue["accepted_name"]
@@ -165,50 +167,65 @@ for key, this_datavalue in taxon_data.items():
     #  eg. Atriplex calotheca (Rafn) Fr. → ''Atriplex calotheca'' (Rafn) Fr. OR
     #  eg. Biscutella laevigata subsp. gracilis Mach.-Laur. → ''Biscutella laevigata'' subsp. ''gracilis'' Mach.-Laur.
     #  aso.
+    # TODO there are kind:consyn (?conceptual synonyms?) and kind:synonym (true synonyms) and to discriminate both
     # use a wiki template to map data, source aso.
-    this_synonym_list=[]
+    this_synonym_list = []
+    this_consyn_list = []
+    this_checklist_citation_list = []
     if "synonyms" in this_datavalue:
         # wiki_text_de += f"* Synonyme:\n"
         # synonyms_list = this_datavalue['synonyms']
         for this_synonym in this_datavalue['synonyms']:
-            this_synonym_list.append(format_species_name(this_synonym["name"]))
+            if this_synonym['kind'] == "synonym":
+                this_synonym_list.append(format_species_name(this_synonym["name"]))
+            elif this_synonym['kind'] == "consyn":
+                this_consyn_list.append(format_species_name(this_synonym["name"]))
 
-    this_checklist_citation = ""
     try:
         this_checklist_citation = this_datavalue['checklist_citations'][0]['long_citation']
     except KeyError:
-        this_checklist_citation = "???"
+        this_checklist_citation = "?Quellenangabe verfehlt: ?checklist_citations?"
 
-    wiki_text_de = "{{{{Artangaben BfN Prüfliste" \
+    wiki_text_de_list.append("{{{{Artangaben BfN Prüfliste" \
         "\n|wissenschaftlicher Name={accepted_name}" \
         "\n|Bearbeitungsstand={name_status}" \
         "\n|Datenquelle={checklist_name}, Datenquelle: {wiki_checklist_uri}, {wiki_api_taxon_uri}" \
         "\n|Quellenangabe={checklist_citation}" \
         "\n|Abfragedatum={query_date}" \
-        "\n|Synonymliste={name_synonyms}" \
+        "\n|Synonymliste={names_synonym}" \
+        "\n|Konzept-Synonymliste={names_consyn}" \
         "\n}}}}\n".format(
             accepted_name=format_species_name(accepted_name),
             query_date='{dt.day}.{dt.month}.{dt.year}'.format(dt=datetime.today()),
-            wiki_checklist_uri=this_datavalue['checklist_uri'],
-            # wiki_checklist_uri="[{uri} {uri_display}]".format(
-            #     uri=this_datavalue['checklist_uri'],
-            #     uri_display=this_datavalue['checklist_uri'].replace("https://", "")
-            # ),
-            wiki_api_taxon_uri='{api_url_taxon}{taxon_id}'.format(
-                api_url_taxon=api_url_taxon,
-                taxon_id=this_datavalue['id']
+            # wiki_checklist_uri=this_datavalue['checklist_uri'],
+            wiki_checklist_uri="[{uri} {uri_display}]".format(
+                uri=this_datavalue['checklist_uri'],
+                uri_display=this_datavalue['checklist_uri'].replace("https://", "")
             ),
-            # wiki_api_taxon_uri='[{api_url_taxon}{taxon_id} {api_url_taxon_display}{taxon_id}]'.format(
+            # wiki_api_taxon_uri='{api_url_taxon}{taxon_id}'.format(
             #     api_url_taxon=api_url_taxon,
-            #     api_url_taxon_display=api_url_taxon.replace("https://", ""),
             #     taxon_id=this_datavalue['id']
             # ),
+            wiki_api_taxon_uri='[{api_url_taxon}{taxon_id} {api_url_taxon_display}{taxon_id}]'.format(
+                api_url_taxon=api_url_taxon,
+                api_url_taxon_display=api_url_taxon.replace("https://", ""),
+                taxon_id=this_datavalue['id']
+            ),
             checklist_name=this_datavalue['checklist'],
             checklist_citation=this_checklist_citation,
             name_status=translate_taxon_status(this_datavalue["taxon_status"]),
-            name_synonyms="; ".join(this_synonym_list)
+            names_synonym="; ".join(this_synonym_list),
+            names_consyn="; ".join(this_consyn_list)
         )
+    )
 
-    # Create an output file for each name 
+# Create an output file for each name
+try:
+    output_file
+except NameError:
+    output_file = os.path.join(working_directory, '{file_name}.wiki'.format(file_name="missing query data"))
+    print("Well, we have missing query data somehow. Please check this python code, the API, "
+          "or read what basic results are contained in “{output}”!".format(output=output_file))
+else:
     with open(output_file, "w", encoding='utf-8') as output:
-        output.write(wiki_text_de)
+        output.write("".join(wiki_text_de_list))

@@ -73,7 +73,8 @@ with open(output_taxa_by_name_file, "w") as output_file:
         # taxname = urllib.parse.quote(taxname[0].upper() + taxname[1:])
         params = {
             'taxname': taxname,
-            'checklist': 43
+            'kingdom': 'plants'
+            #'checklists': 43
         }
         
         # send request
@@ -119,12 +120,14 @@ with open(input_id_list, 'r') as file:
 print("Query checklist api …")
 for taxon_id in inputlist:
     # Construct the complete URL as string with taxon ID
-    url_final_request = api_url_taxon + taxon_id + r"?output-hierarchy%3F=true&output-synonyms%3F=true"
+    url_final_request = api_url_taxon + taxon_id + r"?output-synonyms%3F=true"
+        # output-hierarchy%3F=true seems unneeded for just the synonyms
+
     response2 = requests.get(url_final_request)
     if response2.status_code == 200:
         response_text = response2.text
         data = json.loads(response_text)
-        output_data_temp[taxon_id] = data # Add response to output dictionary
+        output_data_temp[taxon_id] = data  # Add response to output dictionary
     else:
         # Create a log file with errors
         wiki_log = f"Failed to retrieve data for taxon_ID'{taxon_id}'." \
@@ -143,7 +146,7 @@ os.remove(input_id_list)
 os.remove(output_taxa_by_name_file)
 
 end_time = time.time() # Capture the end time
-execution_time = timedelta(seconds=(end_time - start_time)) # Calculate the elapsed time
+execution_time = timedelta(seconds=(end_time - start_time))  # Calculate the elapsed time
 
 print(f'The script took {execution_time} to run.')
 if os.path.exists(log_file):
