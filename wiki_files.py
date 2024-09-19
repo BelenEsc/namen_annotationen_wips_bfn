@@ -38,7 +38,7 @@ def translate_taxon_status(status):
 
     match status.lower():
         case "accepted":
-            return "gültig"
+            return "anerkannt"
         case _:
             return status
 
