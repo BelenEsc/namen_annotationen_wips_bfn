@@ -154,7 +154,6 @@ def format_species_name(scientific_name):
     else:
         return scientific_name
 
-wiki_text_de_list = []
 
 print("Write Wiki template files *.wiki ...")
 for key_taxon_id, this_datavalue in taxon_data.items():
@@ -170,6 +169,7 @@ for key_taxon_id, this_datavalue in taxon_data.items():
     # TODO there are kind:consyn (?conceptual synonyms?) and kind:synonym (true synonyms) and to discriminate both
     # use a wiki template to map data, source aso.
     this_synonym_list = []
+    wiki_text_de_list = []
     this_consyn_list = []
     this_checklist_citation_list = []
     if "synonyms" in this_datavalue:
@@ -186,14 +186,15 @@ for key_taxon_id, this_datavalue in taxon_data.items():
     except KeyError:
         this_checklist_citation = "?Quellenangabe verfehlt: ?checklist_citations?"
 
-    wiki_text_de_list.append("{{{{Artangaben BfN Prüfliste" \
-        "\n|wissenschaftlicher Name={accepted_name}" \
-        "\n|Bearbeitungsstand={name_status}" \
-        "\n|Datenquelle={checklist_name}, Datenquelle: {wiki_checklist_uri}, {wiki_api_taxon_uri}" \
-        "\n|Quellenangabe={checklist_citation}" \
-        "\n|Abfragedatum={query_date}" \
-        "\n|Synonymliste={names_synonym}" \
-        "\n|Konzept-Synonymliste={names_consyn}" \
+    wiki_text_de_list.append(
+        "{{{{Artangaben BfN Prüfliste"
+        "\n|wissenschaftlicher Name={accepted_name}"
+        "\n|Bearbeitungsstand={name_status}"
+        "\n|Datenquelle={checklist_name}, Datenquelle: {wiki_checklist_uri}, {wiki_api_taxon_uri}"
+        "\n|Quellenangabe={checklist_citation}"
+        "\n|Abfragedatum={query_date}"
+        "\n|Synonymliste={names_synonym}"
+        "\n|Konzept-Synonymliste={names_consyn}"
         "\n}}}}\n".format(
             accepted_name=format_species_name(accepted_name),
             query_date='{dt.day}.{dt.month}.{dt.year}'.format(dt=datetime.today()),
@@ -218,6 +219,8 @@ for key_taxon_id, this_datavalue in taxon_data.items():
             names_consyn="; ".join(this_consyn_list)
         )
     )
+    with open(output_file, "a", encoding='utf-8') as output:
+        output.write("".join(wiki_text_de_list))
 
 # Create an output file for each name
 try:
@@ -226,6 +229,4 @@ except NameError:
     output_file = os.path.join(working_directory, '{file_name}.wiki'.format(file_name="missing query data"))
     print("Well, we have missing query data somehow. Please check this python code, the API, "
           "or read what basic results are contained in “{output}”!".format(output=output_file))
-else:
-    with open(output_file, "w", encoding='utf-8') as output:
-        output.write("".join(wiki_text_de_list))
+
