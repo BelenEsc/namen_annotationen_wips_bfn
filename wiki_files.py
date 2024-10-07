@@ -188,6 +188,7 @@ for key_taxon_id, this_datavalue in taxon_data.items():
 
     wiki_text_de_list.append(
         "{{{{Artangaben BfN Prüfliste"
+        "\n|Sofortabfrage ausführen mit={query_by_accepted_name}"
         "\n|wissenschaftlicher Name={accepted_name}"
         "\n|Bearbeitungsstand={name_status}"
         "\n|Datenquelle={checklist_name}, Datenquelle: {wiki_checklist_uri}, {wiki_api_taxon_uri}"
@@ -196,6 +197,7 @@ for key_taxon_id, this_datavalue in taxon_data.items():
         "\n|Synonymliste={names_synonym}"
         "\n|Konzept-Synonymliste={names_consyn}"
         "\n}}}}\n".format(
+            query_by_accepted_name=accepted_name,
             accepted_name=format_species_name(accepted_name),
             query_date='{dt.day}.{dt.month}.{dt.year}'.format(dt=datetime.today()),
             # wiki_checklist_uri=this_datavalue['checklist_uri'],
